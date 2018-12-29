@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
   const genre = await Genre.findById(req.body.genreId);
   if (!genre) return res.status(400).send('Invalid genre.');
 
-  let movie = new Movie({
+  const movie = new Movie({
     title: req.body.title,
     genre: {
       _id: genre._id,
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
     dailyRentalRate: req.body.dailyRentalRate
   });
 
-  movie = await movie.save();
+  await movie.save();
 
   res.send(movie);
 });
@@ -63,7 +63,14 @@ router.put('/:id/', async (req, res) => {
   if (!movie) return res.status(400).send('The movie with the given id was not found');
 
   res.send(movie);
+});
 
+router.delete('/:id', async (req, res) => {
+  const movie = await Movie.findByIdAndRemove(req.params.id);
+
+  if (!movie) return res.status(404).send('The movie with the given ID was not found.');
+
+  res.send(movie);
 });
 
 module.exports = router; 
